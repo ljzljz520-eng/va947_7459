@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2417,
+    "production_files": 34,
+    "production_packages": 9,
+    "test_files": 9,
+    "production_functions": 161,
+    "decision_points": 317
+  },
+  "persistence": {
+    "module": "go.etcd.io/bbolt",
+    "entities": [
+      "ChildProfile",
+      "FitnessBatch",
+      "MeasurementRecord",
+      "ImportIssue",
+      "ClassSummary"
+    ],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {
+      "steps": [
+        "validate school, class, child, and consent",
+        "persist ChildProfile",
+        "parse device CSV and validate four measurements",
+        "persist FitnessBatch, MeasurementRecord, and ImportIssue"
+      ],
+      "test": "TestWorkflowEnrollmentAndCapture"
+    },
+    {
+      "steps": [
+        "load ChildProfile records for a school class",
+        "load MeasurementRecord records and calculate ClassSummary",
+        "mask identity fields for the selected audience",
+        "render a text or JSON class report"
+      ],
+      "test": "TestWorkflowClassReviewAndPrivacy"
+    },
+    {
+      "steps": [
+        "retain valid device scores and register ImportIssue rows",
+        "display batch status and issue counts",
+        "close the bbolt store",
+        "reopen and query FitnessBatch and ChildProfile"
+      ],
+      "test": "TestWorkflowImportAndRecovery"
+    }
+  ]
+}
